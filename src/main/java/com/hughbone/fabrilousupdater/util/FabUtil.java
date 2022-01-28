@@ -27,11 +27,18 @@ public class FabUtil {
     public static Path updaterIgnorePath = FabricLoader.getInstance().getConfigDir().resolve("fabrilous-updater-ignore.txt");
     public static Path modsDir = FabricLoader.getInstance().getGameDir().resolve("mods");
 
-    public static String sendPost(String murmurHash) throws Exception {
+    public static String sendPost(String murmurHash, String platform) throws Exception {
         String body = "[" + murmurHash + "]";
 
         HttpURLConnection urlConn;
-        URL mUrl = new URL("https://addons-ecs.forgesvc.net/api/v2/fingerprint");
+        switch (platform) {
+            case "modrinth":  URL mUrl = new URL("https://addons-ecs.forgesvc.net/api/v2/fingerprint");
+                     break;
+            case "curseforge":  URL mUrl = new URL("https://addons-ecs.forgesvc.net/api/v2/fingerprint");
+                     break;
+            default: System.out.println("Unknown platform");
+                     break;
+        }
         urlConn = (HttpURLConnection) mUrl.openConnection();
         urlConn.setDoOutput(true);
         urlConn.addRequestProperty("Accept", "application/json");

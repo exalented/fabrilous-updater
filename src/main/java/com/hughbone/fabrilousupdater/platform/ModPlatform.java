@@ -50,17 +50,20 @@ public class ModPlatform {
                     try {
                         // Check if Modrinth mod
                         String sha1 = Hash.getSHA1(modFile);
-                        CurrentMod currentMod = new CurrentMod(sha1, "modrinth");
-
-                        if (currentMod.modName != null) {
-                            // Get entire json list of release info
-                            JsonArray json = FabUtil.getJsonArray("https://api.modrinth.com/api/v1/mod/" + currentMod.projectID + "/version");
-                            newestFile = FabUtil.getNewUpdate(json, currentMod, "modrinth");
+                        String postResult = FabUtil.sendPost(sha1, "modrinth");
+                        
+                        if (postResult != null) {
+                            CurrentMod currentMod = new CurrentMod(sha1, "modrinth");
+                            if (currentMod.modName != null) {
+                                // Get entire json list of release info
+                                JsonArray json = FabUtil.getJsonArray("https://api.modrinth.com/api/v1/mod/" + currentMod.projectID + "/version");
+                                newestFile = FabUtil.getNewUpdate(json, currentMod, "modrinth");
+                            }
                         }
                         // Check if CurseForge mod
                         else {
                             String murmurHash = Hash.getMurmurHash(modFile);
-                            String postResult = FabUtil.sendPost(murmurHash);
+                            String postResult = FabUtil.sendPost(murmurHash, "curseforge");
 
                             if (postResult != null) {
                                 // Get project ID
